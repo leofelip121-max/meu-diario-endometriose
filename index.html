@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#6d647f">
+<meta name="application-name" content="Meu Diário – Endometriose">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Meu Diário">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Meu Diário — Endometriose</title>
+<style>
+:root{--ink:#302d36;--muted:#77727f;--bg:#f6f4f7;--card:#fff;--accent:#766b8c;--soft:#eeeaf3;--line:#e8e3eb;--good:#477b62;--warn:#a36b35}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:linear-gradient(135deg,#746985,#a49aae);color:white;padding:28px 18px 34px}
+.wrap{max-width:760px;margin:auto;padding:0 16px}
+h1{font-size:27px;margin:0 0 5px;font-weight:750}header p{margin:0;opacity:.92}
+main{margin:-18px auto 40px;position:relative}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 4px 18px #32223a0a}
+h2{font-size:19px;margin:0 0 13px}h3{font-size:16px;margin:0 0 8px}
+label{display:block;font-weight:650;font-size:14px;margin:13px 0 6px}
+input,select,textarea{font:inherit;width:100%;border:1px solid #dcd6e2;border-radius:11px;padding:11px;background:white;color:var(--ink)}
+textarea{min-height:76px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.symptom{padding:12px 0;border-bottom:1px solid var(--line)}.symptom:last-child{border:0}
+.symptom-top{display:flex;justify-content:space-between;gap:10px;font-weight:650;font-size:14px}
+.value{color:var(--accent);font-weight:750}
+input[type=range]{padding:0;accent-color:var(--accent);margin:9px 0 0}
+.scale{display:flex;justify-content:space-between;color:var(--muted);font-size:11px}
+.checks{display:flex;flex-wrap:wrap;gap:9px}
+.check{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:10px;padding:9px 10px;font-size:13px;font-weight:500}
+.check input{width:auto;margin:0;accent-color:var(--accent)}
+button{border:0;border-radius:12px;padding:12px 15px;font:650 15px system-ui;cursor:pointer}
+.primary{background:var(--accent);color:#fff;width:100%;margin-top:14px}
+.secondary{background:var(--soft);color:var(--ink)}
+.danger{background:#f7e9e8;color:#914d48}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.actions button{flex:1}
+.small{font-size:12px;color:var(--muted)}
+.notice{background:#f5f1e9;border-left:4px solid #b38a54;padding:12px;border-radius:9px;font-size:13px;color:#51483d}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.stat{background:var(--soft);padding:12px;border-radius:12px;text-align:center}
+.stat b{font-size:22px;display:block;color:var(--accent)}
+.entry{border-top:1px solid var(--line);padding:12px 0}
+.entry:first-child{border-top:0}.entry strong{display:block}
+canvas{width:100%;height:210px;display:block}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:5px 20px 30px}
+@media(max-width:520px){.row{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr 1fr}.card{padding:15px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Meu Diário</h1><p>Acompanhamento de sintomas • 90 dias</p></div></header>
+<main class="wrap">
+<section class="card">
+<h2>Meu acompanhamento</h2>
+<div class="row">
+<div><label for="start">Data de início do acompanhamento</label><input id="start" type="date"></div>
+<div><label for="name">Nome (opcional)</label><input id="name" placeholder="Como gostaria de ser chamada"></div>
+</div>
+<p class="small">O período de 90 dias é apenas uma janela de observação. O uso de NAC, dose e frequência devem ser definidos com o profissional de saúde.</p>
+</section>
+
+<section class="card">
+<h2>Registro de hoje</h2>
+<div class="row">
+<div><label for="date">Data</label><input id="date" type="date"></div>
+<div><label for="cycle">Fase do ciclo</label><select id="cycle"><option value="">Selecione</option><option>Menstruação</option><option>Antes da menstruação</option><option>Depois da menstruação</option><option>Meio do ciclo</option><option>Não sei / irregular</option></select></div>
+</div>
+<h3 style="margin-top:18px">Intensidade das dores</h3>
+<p class="small">Marque de 0 a 10: 0 = nenhuma dor; 10 = pior dor imaginável.</p>
+<div id="sliders"></div>
+<label>As dores atrapalharam suas atividades hoje?</label>
+<select id="impact"><option value="">Selecione</option><option>Não</option><option>Um pouco</option><option>Moderadamente</option><option>Muito</option><option>Não consegui realizar atividades</option></select>
+<label>Teve relação sexual hoje?</label>
+<select id="sex"><option value="">Prefiro não informar / não se aplica</option><option>Não</option><option>Sim, sem dor</option><option>Sim, com dor leve</option><option>Sim, com dor moderada</option><option>Sim, com dor intensa</option></select>
+<label>Usou algum medicamento hoje?</label>
+<input id="meds" placeholder="Nome, dose e horário, se souber">
+<label>Suplementação (se foi orientada pelo profissional)</label>
+<input id="supplement" placeholder="Produto, quantidade e horário — ou 'não usei'">
+<label>Teve algum efeito diferente ou desconforto?</label>
+<textarea id="effects" placeholder="Ex.: enjoo, dor no estômago, dor de cabeça..."></textarea>
+<label>Observações</label>
+<textarea id="notes" placeholder="Como foi seu dia? O que melhorou ou piorou?"></textarea>
+<button class="primary" id="save">Salvar registro de hoje</button>
+<p class="small" id="feedback" aria-live="polite"></p>
+</section>
+
+<section class="card">
+<h2>Minha evolução</h2>
+<div class="stats">
+<div class="stat"><b id="count">0</b><span class="small">registros</span></div>
+<div class="stat"><b id="days">0</b><span class="small">dias acompanhados</span></div>
+<div class="stat"><b id="avg">—</b><span class="small">média das dores</span></div>
+</div>
+<label for="metric">Ver evolução de:</label>
+<select id="metric">
+<option value="virilha">Dor na virilha</option><option value="perna">Dor na perna</option><option value="pelvica">Dor pélvica</option><option value="colica">Cólicas</option><option value="sexo">Dor durante a relação</option><option value="costas">Dor nas costas</option>
+</select>
+<canvas id="chart" width="700" height="230" aria-label="Gráfico de evolução das dores"></canvas>
+<p class="small">O gráfico mostra apenas os registros preenchidos. Não é uma avaliação médica.</p>
+</section>
+
+<section class="card">
+<h2>Histórico</h2>
+<div id="history"><p class="small">Nenhum registro salvo ainda.</p></div>
+<div class="actions">
+<button class="secondary" id="export">Baixar meus registros (CSV)</button>
+<button class="secondary" id="print">Imprimir / salvar PDF</button>
+<button class="danger" id="clear">Apagar todos os registros</button>
+</div>
+</section>
+
+<section class="card">
+<h2>Quando procurar atendimento</h2>
+<div class="notice">Não espere completar o diário se houver dor súbita muito intensa ou piora importante. Procure atendimento urgente se ocorrer fraqueza nova na perna, perda de sensibilidade na região íntima, dificuldade para urinar ou perda do controle da bexiga ou intestino. Em caso de dúvida, procure orientação médica.</div>
+<p class="small" style="margin-top:12px">Este diário é uma ferramenta de organização e não substitui consulta, diagnóstico ou tratamento. Os dados ficam salvos neste navegador e neste aparelho; exporte uma cópia para não perdê-los.</p>
+</section>
+</main>
+<footer>Diário pessoal de acompanhamento • Seus registros são privados neste aparelho.</footer>
+<script>
+const fields=[
+ ['virilha','Dor na virilha'],['perna','Dor na perna'],['pelvica','Dor pélvica'],['colica','Cólicas menstruais'],['sexo','Dor durante a relação sexual'],['costas','Dor nas costas']
+];
+const $=id=>document.getElementById(id);
+const today=new Date(); const iso=d=>{const x=new Date(d.getTime()-d.getTimezoneOffset()*60000);return x.toISOString().slice(0,10)};
+$('date').value=iso(today); $('start').value=iso(today);
+$('sliders').innerHTML=fields.map(([id,label])=>`<div class="symptom"><div class="symptom-top"><span>${label}</span><span class="value" id="${id}v">0/10</span></div><input type="range" min="0" max="10" step="1" value="0" id="${id}"><div class="scale"><span>0 · Sem dor</span><span>10 · Dor máxima</span></div></div>`).join('');
+fields.forEach(([id])=>$(id).addEventListener('input',()=>$(id+'v').textContent=$(id).value+'/10'));
+const key='meuDiarioEndometriose90_v1';
+let records=[];try{records=JSON.parse(localStorage.getItem(key)||'[]')}catch(e){}
+function persist(){localStorage.setItem(key,JSON.stringify(records));render()}
+$('save').onclick=()=>{
+ const date=$('date').value;if(!date){$('feedback').textContent='Informe a data.';return}
+ const r={date,cycle:$('cycle').value,impact:$('impact').value,sex:$('sex').value,meds:$('meds').value,supplement:$('supplement').value,effects:$('effects').value,notes:$('notes').value};
+ fields.forEach(([id])=>r[id]=Number($(id).value));
+ records=records.filter(x=>x.date!==date);records.push(r);records.sort((a,b)=>a.date.localeCompare(b.date));persist();
+ $('feedback').textContent='Registro salvo neste aparelho. Você pode voltar e preencher novamente em outro dia.';
+};
+function avg(r){let vals=fields.map(([id])=>r[id]).filter(v=>Number.isFinite(v));return vals.reduce((a,b)=>a+b,0)/vals.length}
+function render(){
+ $('count').textContent=records.length;
+ $('days').textContent=new Set(records.map(r=>r.date)).size;
+ $('avg').textContent=records.length? (records.reduce((s,r)=>s+avg(r),0)/records.length).toFixed(1)+'/10':'—';
+ $('history').innerHTML=records.length? [...records].reverse().map(r=>`<div class="entry"><strong>${new Date(r.date+'T12:00:00').toLocaleDateString('pt-BR')} · Média ${avg(r).toFixed(1)}/10</strong><span class="small">Virilha ${r.virilha}/10 · Perna ${r.perna}/10 · Pélvica ${r.pelvica}/10 · Cólicas ${r.colica}/10</span>${r.notes?`<p>${esc(r.notes)}</p>`:''}${r.effects?`<p class="small">Efeitos: ${esc(r.effects)}</p>`:''}</div>`).join(''):'<p class="small">Nenhum registro salvo ainda.</p>';
+ draw();
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function draw(){
+ const c=$('chart'),ctx=c.getContext('2d'),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);
+ const id=$('metric').value;const data=records.filter(r=>Number.isFinite(r[id])).slice(-30);
+ ctx.strokeStyle='#e8e3eb';ctx.lineWidth=1;for(let i=0;i<=10;i+=2){let y=15+(10-i)*(h-45)/10;ctx.beginPath();ctx.moveTo(42,y);ctx.lineTo(w-12,y);ctx.stroke();ctx.fillStyle='#77727f';ctx.font='12px system-ui';ctx.fillText(i,15,y+4)}
+ if(!data.length){ctx.fillStyle='#77727f';ctx.font='15px system-ui';ctx.fillText('Seus registros aparecerão aqui.',55,110);return}
+ const x=i=>data.length===1?w/2:48+i*(w-72)/(data.length-1),y=v=>15+(10-v)*(h-45)/10;
+ ctx.strokeStyle='#766b8c';ctx.lineWidth=3;ctx.beginPath();data.forEach((r,i)=>i?ctx.lineTo(x(i),y(r[id])):ctx.moveTo(x(i),y(r[id])));ctx.stroke();
+ data.forEach((r,i)=>{ctx.fillStyle='#766b8c';ctx.beginPath();ctx.arc(x(i),y(r[id]),5,0,Math.PI*2);ctx.fill()});
+ ctx.fillStyle='#77727f';ctx.font='11px system-ui';ctx.fillText(new Date(data[0].date+'T12:00:00').toLocaleDateString('pt-BR'),42,h-8);if(data.length>1)ctx.fillText(new Date(data[data.length-1].date+'T12:00:00').toLocaleDateString('pt-BR'),w-90,h-8);
+}
+$('metric').onchange=draw;
+$('export').onclick=()=>{
+ if(!records.length){alert('Ainda não há registros.');return}
+ const cols=['date','cycle',...fields.map(x=>x[0]),'impact','sex','meds','supplement','effects','notes'];
+ const csv=[cols.join(';'),...records.map(r=>cols.map(k=>'"'+String(r[k]??'').replace(/"/g,'""')+'"').join(';'))].join('\n');
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}));a.download='diario-endometriose.csv';a.click();URL.revokeObjectURL(a.href);
+};
+$('print').onclick=()=>window.print();
+$('clear').onclick=()=>{if(confirm('Tem certeza de que deseja apagar todos os registros deste aparelho? Esta ação não pode ser desfeita.')){records=[];persist();$('feedback').textContent='Registros apagados.'}};
+render();
+</script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js").catch(()=>{}));
+}
+</script>
+</body></html>

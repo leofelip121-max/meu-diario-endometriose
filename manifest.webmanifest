@@ -1,0 +1,27 @@
+{
+  "id": "./",
+  "name": "Meu Diário – Endometriose",
+  "short_name": "Meu Diário",
+  "description": "Diário pessoal de acompanhamento de sintomas por 90 dias.",
+  "lang": "pt-BR",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f4f7",
+  "theme_color": "#6d647f",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
